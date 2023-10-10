@@ -1,3 +1,4 @@
 import './styles/style.css';
+import Logger from './modules/logger';
 
-console.log('test');
+Logger.log('test');
