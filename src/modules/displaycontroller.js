@@ -19,15 +19,16 @@ class DisplayController {
       const project = document.createElement('div');
       project.className = "project";
 
-      const proj_name = document.createElement('h1');
-      proj_name.className = "projectName";
-      proj_name.textContent = item.name;
+      const projectName = document.createElement('h1');
+      projectName.className = "projectName";
+      projectName.textContent = item.name;
 
-      const proj_due = document.createElement('p');
-      proj_due.className = "projDue";
-      proj_due.textContent = item.dueDate;
+      const projectDue = document.createElement('p');
+      projectDue.className = "projectDue";
+      projectDue.textContent = item.dueDate;
 
       project.append(proj_name, proj_due);
+      project.append(projectName, projectDue);
       content.appendChild(project);
     })
   }
