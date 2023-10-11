@@ -10,4 +10,10 @@ testProject.addTodo(testTodo);
 Logger.log(testProject);
 const displayController = new DisplayController();
 displayController.addProject(testProject);
-Logger.log(displayController.projects);
+
+for(let i = 0; i < 5; i++) {
+  displayController.addProject(new Project(`Project ${i}`, new Date(Date.now()), []));
+}
+Logger.log(displayController);
+
+displayController.displayProjects();
