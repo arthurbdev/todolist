@@ -4,7 +4,7 @@ import Todo from './modules/todo';
 import Project from './modules/project';
 import DisplayController from './modules/displaycontroller';
 
-const testTodo = new Todo('name', 'desc', new Date(Date.now()), 1);
+const testTodo = new Todo('title', 'desc', new Date(Date.now()), 1);
 const testProject = new Project('Project1', new Date(Date.now()), []);
 testProject.addTodo(testTodo);
 Logger.log(testProject);

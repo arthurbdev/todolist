@@ -1,8 +1,8 @@
 import Logger from "./logger";
 
 class Project {
-  constructor(name, dueDate, todos) {
-    this.name = name;
+  constructor(title, dueDate, todos) {
+    this.title = title;
     this.dueDate = dueDate;
     this.todos = todos;
   }

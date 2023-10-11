@@ -19,9 +19,9 @@ class DisplayController {
       const project = document.createElement('div');
       project.className = "project";
 
-      const projectName = document.createElement('h1');
-      projectName.className = "projectName";
-      projectName.textContent = item.name;
+      const projectTitle = document.createElement('h1');
+      projectTitle.className = "projectTitle";
+      projectTitle.textContent = item.title;
 
       const projectDue = document.createElement('p');
       projectDue.className = "projectDue";
@@ -29,6 +29,7 @@ class DisplayController {
 
       project.append(proj_name, proj_due);
       project.append(projectName, projectDue);
+      project.append(projectTitle, projectDue);
       content.appendChild(project);
     })
   }
