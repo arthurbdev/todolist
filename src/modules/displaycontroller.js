@@ -12,4 +12,6 @@ class DisplayController {
   }
 
 
+}
+
 export default DisplayController;
