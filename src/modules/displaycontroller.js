@@ -27,9 +27,10 @@ class DisplayController {
       projectDue.className = "projectDue";
       projectDue.textContent = item.dueDate;
 
-      project.append(proj_name, proj_due);
-      project.append(projectName, projectDue);
-      project.append(projectTitle, projectDue);
+      const projectNumOfTodos = document.createElement('p');
+      projectNumOfTodos.className = "projectNumOfTodos";
+      projectNumOfTodos.textContent = item.todos.length;
+      project.append(projectTitle, projectDue, projectNumOfTodos);
       content.appendChild(project);
     })
   }
