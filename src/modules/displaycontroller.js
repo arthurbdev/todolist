@@ -19,7 +19,7 @@ class DisplayController {
       const project = document.createElement('div');
       project.className = "project";
 
-      const projectTitle = document.createElement('h1');
+      const projectTitle = document.createElement('header');
       projectTitle.className = "projectTitle";
       projectTitle.textContent = item.title;
 
@@ -56,7 +56,7 @@ class DisplayController {
       const todo = document.createElement('div');
       todo.className = "todo";
 
-      const todoTitle = document.createElement('h1');
+      const todoTitle = document.createElement('header');
       todoTitle.className = "todoTitle";
       todoTitle.textContent = item.title;
 
