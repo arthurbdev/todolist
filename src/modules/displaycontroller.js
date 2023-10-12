@@ -33,25 +33,26 @@ class DisplayController {
 
       const displayTodoBtn = document.createElement('button');
       displayTodoBtn.textContent = "View Tasks";
-      displayTodoBtn.addEventListener('click', this.displayTodos.bind(this));
+      displayTodoBtn.addEventListener('click', this.expandTodo);
 
       project.dataset.index = index;
 
       project.append(projectTitle, projectDue, projectNumOfTodos,
                      displayTodoBtn);
 
+      this.displayTodos(project);
+
+
       content.appendChild(project);
     })
   }
 
-
-  displayTodos(e){
-    Logger.log(e.target.parentElement.dataset.index);
-    const projectIndex = parseInt(e.target.parentElement.dataset.index);
+  displayTodos(projectElement){
+    const projectIndex = projectElement.dataset.index;
     const todoList = document.createElement('div');
-    todoList.className = "todoList";
+    todoList.classList.add('hidden', 'todoList');
+
     this.projects[projectIndex].todos.forEach(item => {
-      Logger.log(item);
       const todo = document.createElement('div');
       todo.className = "todo";
 
@@ -74,7 +75,20 @@ class DisplayController {
       todo.append(todoTitle, todoStatus, todoDueDate, todoDescription);
       todoList.appendChild(todo);
     })
-    e.target.parentElement.appendChild(todoList);
+
+    projectElement.appendChild(todoList);
+  }
+
+  expandTodo(e) {
+    const todolist = e.target.parentElement.querySelector(".todoList");
+    if(todolist.classList.value.includes("hidden")) {
+      e.target.textContent = "Hide tasks";
+    }
+    else {
+      e.target.textContent = "View tasks";
+    }
+
+    todolist.classList.toggle("hidden");
   }
 
 }
