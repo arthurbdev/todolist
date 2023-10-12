@@ -108,6 +108,15 @@ class DisplayController {
     this.displayTodos(projectElement);
 
     projectElement.querySelector(".todoList").classList.toggle("hidden");
+
+    this.updateNumberOfTodos(projectElement);
+  }
+
+  updateNumberOfTodos(projectElement) {
+    const projectId = projectElement.dataset.index;
+
+    projectElement.querySelector(".projectNumOfTodos").textContent = 
+      this.projects[projectId].todos.length;
   }
 }
 
