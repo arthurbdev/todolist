@@ -52,9 +52,10 @@ class DisplayController {
     const todoList = document.createElement('div');
     todoList.classList.add('hidden', 'todoList');
 
-    this.projects[projectIndex].todos.forEach(item => {
+    this.projects[projectIndex].todos.forEach((item, index) => {
       const todo = document.createElement('div');
       todo.className = "todo";
+      todo.dataset.index = index;
 
       const todoTitle = document.createElement('header');
       todoTitle.className = "todoTitle";
@@ -69,10 +70,15 @@ class DisplayController {
       todoDueDate.textContent = item.dueDate;
 
       const todoStatus = document.createElement('p');
-      todoStatus.className = "todoStatus"
+      todoStatus.className = "todoStatus";
       todoStatus.textContent = item.isComplete ? "complete" : "not complete";
 
-      todo.append(todoTitle, todoStatus, todoDueDate, todoDescription);
+      const deleteTodoBtn = document.createElement('button');
+      deleteTodoBtn.className = "deleteTodoBtn";
+      deleteTodoBtn.textContent = "Remove Task";
+      deleteTodoBtn.addEventListener('click', this.deleteTodo.bind(this));
+
+      todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, deleteTodoBtn);
       todoList.appendChild(todo);
     })
 
@@ -91,6 +97,18 @@ class DisplayController {
     todolist.classList.toggle("hidden");
   }
 
+  deleteTodo(e){
+    const todoId = e.target.closest(".todo").dataset.index;
+    const projectElement = e.target.closest(".project");
+
+    const projectId = projectElement.dataset.index;
+    this.projects[projectId].removeTodo(todoId);
+
+    projectElement.removeChild(e.target.closest(".todoList"));
+    this.displayTodos(projectElement);
+
+    projectElement.querySelector(".todoList").classList.toggle("hidden");
+  }
 }
 
 export default DisplayController;
