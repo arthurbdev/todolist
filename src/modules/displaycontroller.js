@@ -49,6 +49,11 @@ class DisplayController {
 
   displayTodos(projectElement){
     const projectIndex = projectElement.dataset.index;
+
+    // remove previous list of todos from display if it exists
+    let l = projectElement.querySelector('.todoList');
+    if(l) l.remove();
+
     const todoList = document.createElement('div');
     todoList.classList.add('hidden', 'todoList');
 
@@ -100,14 +105,15 @@ class DisplayController {
   deleteTodo(e){
     const todoId = e.target.closest(".todo").dataset.index;
     const projectElement = e.target.closest(".project");
-
     const projectId = projectElement.dataset.index;
-    this.projects[projectId].removeTodo(todoId);
 
-    projectElement.removeChild(e.target.closest(".todoList"));
+    // remove todo from project's list and update the display
+    this.projects[projectId].removeTodo(todoId);
     this.displayTodos(projectElement);
 
-    projectElement.querySelector(".todoList").classList.toggle("hidden");
+    // simulate the click of 'view tasks' button so that the view 
+    // doesn't collapse when user deletes a task
+    projectElement.querySelector(".displayTodoBtn").click();
 
     this.updateNumberOfTodos(projectElement);
   }
