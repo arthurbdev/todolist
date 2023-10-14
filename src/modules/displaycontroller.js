@@ -34,7 +34,7 @@ class DisplayController {
       const displayTodoBtn = document.createElement('button');
       displayTodoBtn.textContent = "View Tasks";
       displayTodoBtn.className = "displayTodoBtn";
-      displayTodoBtn.addEventListener('click', this.expandTodo);
+      displayTodoBtn.addEventListener('click', () => this.expandTodoList(project));
 
       const addTodoBtn = document.createElement('button');
       addTodoBtn.className = "addTodoBtn";
@@ -96,13 +96,14 @@ class DisplayController {
     projectElement.appendChild(todoList);
   }
 
-  expandTodo(e) {
-    const todolist = e.target.parentElement.querySelector(".todoList");
+  expandTodoList(projectElement) {
+    const todolist = projectElement.querySelector(".todoList");
+    const displayTodoBtn = projectElement.querySelector(".displayTodoBtn");
     if(todolist.classList.value.includes("hidden")) {
-      e.target.textContent = "Hide tasks";
+      displayTodoBtn.textContent = "Hide tasks";
     }
     else {
-      e.target.textContent = "View tasks";
+      displayTodoBtn.textContent = "View tasks";
     }
 
     todolist.classList.toggle("hidden");
@@ -119,7 +120,7 @@ class DisplayController {
 
     // simulate the click of 'view tasks' button so that the view 
     // doesn't collapse when user deletes a task
-    projectElement.querySelector(".displayTodoBtn").click();
+    this.expandTodoList(projectElement);
 
     this.updateNumberOfTodos(projectElement);
   }
@@ -159,9 +160,10 @@ class DisplayController {
       let projectElement = document.querySelectorAll('.project')[index];
       let formData = Object.fromEntries(new FormData(form));
       this.projects[index].addTodo(new Todo(formData.title, formData.description, formData.date, formData.priority));
-      this.displayTodos(projectElement)
-      this.updateNumberOfTodos(projectElement)
-      projectElement.querySelector(".displayTodoBtn").click();
+
+      this.displayTodos(projectElement);
+      this.updateNumberOfTodos(projectElement);
+      this.expandTodoList(projectElement);
 
       form.reset();
       dialog.close();
