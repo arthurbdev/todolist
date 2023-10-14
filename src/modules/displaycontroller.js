@@ -33,12 +33,18 @@ class DisplayController {
 
       const displayTodoBtn = document.createElement('button');
       displayTodoBtn.textContent = "View Tasks";
+      displayTodoBtn.className = "displayTodoBtn";
       displayTodoBtn.addEventListener('click', this.expandTodo);
+
+      const addTodoBtn = document.createElement('button');
+      addTodoBtn.className = "addTodoBtn";
+      addTodoBtn.textContent = "Add Task";
+      addTodoBtn.addEventListener('click', this.addTodo.bind(this));
 
       project.dataset.index = index;
 
       project.append(projectTitle, projectDue, projectNumOfTodos,
-                     displayTodoBtn);
+                     displayTodoBtn, addTodoBtn);
 
       this.displayTodos(project);
 
@@ -123,6 +129,52 @@ class DisplayController {
 
     projectElement.querySelector(".projectNumOfTodos").textContent = 
       this.projects[projectId].todos.length;
+  }
+
+  addModals() {
+    const dialog = document.createElement('dialog');
+    dialog.id = "addTodoDialog";
+    dialog.innerHTML = `
+      <form action="">
+        <button type="button" id="closeDialogBtn">x</button>
+        <header>Add new Task</header>
+        <label for="todoTitle">Title*:</label>
+        <input id="todoTitle" type="text" name="title" placeholder="Title" required>
+        <label for="todoDescription">Description*:</label>
+        <textarea rows="" cols="" id="todoDescription"></textarea>
+        <label for="todoDate">Date:</label>
+        <input type="date" id="todoDate" name="date">
+        <label for="todoPriority">Priority:</label>
+        <input type="range" id="todoPriority" name="priority">
+        <button type="submit">Add Task</button>
+      </form>
+`
+    document.body.appendChild(dialog);
+    const closeBtn = document.getElementById("closeDialogBtn");
+    const form = dialog.querySelector('form');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let index = dialog.dataset.index;
+      let projectElement = document.querySelectorAll('.project')[index];
+      let formData = Object.fromEntries(new FormData(form));
+      this.projects[index].addTodo(new Todo(formData.title, formData.description, formData.date, formData.priority));
+      this.displayTodos(projectElement)
+      this.updateNumberOfTodos(projectElement)
+      projectElement.querySelector(".displayTodoBtn").click();
+
+      form.reset();
+      dialog.close();
+    })
+
+    closeBtn.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => form.reset());
+  }
+
+  addTodo(e) {
+    const dialog = document.getElementById("addTodoDialog");
+    dialog.dataset.index = e.target.parentElement.dataset.index;
+    dialog.showModal();
   }
 }
 
