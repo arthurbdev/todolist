@@ -73,7 +73,11 @@ class DisplayController {
       const deleteTodoBtn = this.createElement("button", "deleteTodoBtn", "Remove Task");
       deleteTodoBtn.addEventListener('click', this.deleteTodo.bind(this));
 
-      todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, deleteTodoBtn);
+      const editTodoBtn = this.createElement("button", "editTodoBtn", "Edit Task");
+      editTodoBtn.addEventListener('click', this.editTodo.bind(this));
+
+      todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, 
+                  deleteTodoBtn, editTodoBtn);
       todoList.appendChild(todo);
     })
 
@@ -120,42 +124,79 @@ class DisplayController {
   }
 
   addModals() {
-    const dialog = document.createElement('dialog');
-    dialog.id = "addTodoDialog";
-    dialog.innerHTML = `
+    const addTodoDialog = document.createElement('dialog');
+    addTodoDialog.id = "addTodoDialog";
+    addTodoDialog.innerHTML = `
       <form action="">
-        <button type="button" id="closeDialogBtn">x</button>
+        <button type="button" class="closeDialogBtn">x</button>
         <header>Add new Task</header>
-        <label for="todoTitle">Title*:</label>
-        <input id="todoTitle" type="text" name="title" placeholder="Title" required>
-        <label for="todoDescription">Description*:</label>
-        <textarea rows="" cols="" id="todoDescription"></textarea>
-        <label for="todoDate">Date:</label>
-        <input type="date" id="todoDate" name="date">
-        <label for="todoPriority">Priority:</label>
-        <input type="range" id="todoPriority" name="priority">
-        <button type="submit">Add Task</button>
+        <label >Title*:
+          <input class="inputTitle" type="text" name="title" placeholder="Title" required>
+        </label>
+        <label >Description*:
+          <textarea name="description" rows="" cols="" class="inputDescription"></textarea>
+        </label>
+        <label >Date:
+          <input type="date" class="inputDate" name="date">
+        </label>
+        <label >Priority:
+          <input type="range" class="inputPriority" name="priority">
+        </label>
+        <button class="submitBtn" type="submit">Add Task</button>
       </form>
 `
-    document.body.appendChild(dialog);
-    const closeBtn = document.getElementById("closeDialogBtn");
-    const form = dialog.querySelector('form');
+    // clone the add task dialog and make a few changes
+    const editTodoDialog = addTodoDialog.cloneNode(true);
+    editTodoDialog.id = "editTodoDialog";
+    editTodoDialog.querySelector('.submitBtn').textContent = "Save changes";
+    editTodoDialog.querySelector('header').textContent = "Edit task";
 
-    form.addEventListener('submit', e => {
+    const addTodoForm = addTodoDialog.querySelector('form');
+    const editTodoForm = editTodoDialog.querySelector('form');
+
+    document.body.append(addTodoDialog, editTodoDialog);
+
+    addTodoForm.addEventListener('submit', e => {
       e.preventDefault();
-      let index = dialog.dataset.index;
-      let projectElement = document.querySelectorAll('.project')[index];
-      let formData = Object.fromEntries(new FormData(form));
-      this.projects[index].addTodo(new Todo(formData.title, formData.description, formData.date, formData.priority));
+      const index = addTodoDialog.dataset.index;
+      const projectElement = document.querySelectorAll('.project')[index];
+      let formData = Object.fromEntries(new FormData(addTodoForm));
+      this.projects[index].addTodo(new Todo(formData.title, 
+        formData.description, formData.date, formData.priority));
 
       this.updateTodoList(projectElement);
 
-      form.reset();
-      dialog.close();
-    })
+      addTodoForm.reset();
+      addTodoDialog.close();
+    });
 
-    closeBtn.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('close', () => form.reset());
+    addTodoDialog.addEventListener('close', () => addTodoForm.reset());
+
+    editTodoForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const projectIndex = editTodoDialog.dataset.projectIndex;
+      const todoIndex = editTodoDialog.dataset.todoIndex;
+      const formData = Object.fromEntries(new FormData(editTodoForm));
+      let todo = this.projects[projectIndex].todos[todoIndex];
+
+      todo.title = formData.title;
+      todo.description = formData.description;
+      // todo.completion = formData.completion;
+      // todo.dueDate = formData.date;
+      // todo.priority = formData.priority;
+
+      const projectElement = document.querySelectorAll('.project')[projectIndex];
+      this.updateTodoList(projectElement);
+      
+      editTodoDialog.close();
+    });
+
+    // each close button closes its repsective dialog
+    document.querySelectorAll('.closeDialogBtn').forEach(button => {
+      button.addEventListener('click', () => 
+        button.closest('dialog').close());
+    });
+  }
 
   updateTodoList(projectElement) {
     this.displayTodos(projectElement);
@@ -167,6 +208,18 @@ class DisplayController {
     const dialog = document.getElementById("addTodoDialog");
     dialog.dataset.index = e.target.parentElement.dataset.index;
     dialog.showModal();
+  }
+
+  editTodo(e) {
+    const dialog = document.getElementById("editTodoDialog");
+    const todoIndex =  e.target.parentElement.dataset.index;
+    const projectIndex = e.target.closest('.project').dataset.index;
+    dialog.dataset.todoIndex = todoIndex;
+    dialog.dataset.projectIndex = projectIndex;
+    let todo = this.projects[projectIndex].todos[todoIndex];
+    dialog.querySelector('.inputTitle').value = todo.title;
+    dialog.querySelector('.inputDescription').value = todo.description;
+
   }
 }
 
