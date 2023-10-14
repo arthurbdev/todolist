@@ -125,13 +125,7 @@ class DisplayController {
 
     // remove todo from project's list and update the display
     this.projects[projectId].removeTodo(todoId);
-    this.displayTodos(projectElement);
-
-    // simulate the click of 'view tasks' button so that the view 
-    // doesn't collapse when user deletes a task
-    this.expandTodoList(projectElement);
-
-    this.updateNumberOfTodos(projectElement);
+    this.updateTodoList(projectElement);
   }
 
   updateNumberOfTodos(projectElement) {
@@ -170,9 +164,7 @@ class DisplayController {
       let formData = Object.fromEntries(new FormData(form));
       this.projects[index].addTodo(new Todo(formData.title, formData.description, formData.date, formData.priority));
 
-      this.displayTodos(projectElement);
-      this.updateNumberOfTodos(projectElement);
-      this.expandTodoList(projectElement);
+      this.updateTodoList(projectElement);
 
       form.reset();
       dialog.close();
@@ -180,6 +172,11 @@ class DisplayController {
 
     closeBtn.addEventListener('click', () => dialog.close());
     dialog.addEventListener('close', () => form.reset());
+
+  updateTodoList(projectElement) {
+    this.displayTodos(projectElement);
+    this.expandTodoList(projectElement);
+    this.updateNumberOfTodos(projectElement);
   }
 
   addTodo(e) {
