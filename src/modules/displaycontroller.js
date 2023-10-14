@@ -99,6 +99,15 @@ class DisplayController {
   expandTodoList(projectElement) {
     const todolist = projectElement.querySelector(".todoList");
     const displayTodoBtn = projectElement.querySelector(".displayTodoBtn");
+
+    // if there are no todos in a project, hide the button and the list
+    if(!todolist.firstChild) {
+      displayTodoBtn.style.display = 'none';
+      todolist.classList.add("hidden");
+      return;
+    }
+    else displayTodoBtn.style.display = '';
+
     if(todolist.classList.value.includes("hidden")) {
       displayTodoBtn.textContent = "Hide tasks";
     }
