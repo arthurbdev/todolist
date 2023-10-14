@@ -9,36 +9,31 @@ class DisplayController {
   addProject(project) {
     this.projects.push(project);
     Logger.log(project, this.projects)
+
+  createElement(tag, className, textContent=null) {
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = textContent;
+    return element;
   }
 
   displayProjects() {
     Logger.log(this);
-    const content = document.getElementById('content');
+    const content = document.getElementById("content");
 
     this.projects.forEach((item, index) => {
-      const project = document.createElement('div');
-      project.className = "project";
+      const project = this.createElement("div", "project")
 
-      const projectTitle = document.createElement('header');
-      projectTitle.className = "projectTitle";
-      projectTitle.textContent = item.title;
+      const projectTitle = this.createElement("header", "projectTitle", item.title);
 
-      const projectDue = document.createElement('p');
-      projectDue.className = "projectDue";
-      projectDue.textContent = item.dueDate;
+      const projectDue = this.createElement("p", "projectDue", item.dueDate);
 
-      const projectNumOfTodos = document.createElement('p');
-      projectNumOfTodos.className = "projectNumOfTodos";
-      projectNumOfTodos.textContent = item.todos.length;
+      const projectNumOfTodos = this.createElement("p", "projectNumOfTodos", item.todos.length);
 
-      const displayTodoBtn = document.createElement('button');
-      displayTodoBtn.textContent = "View Tasks";
-      displayTodoBtn.className = "displayTodoBtn";
+      const displayTodoBtn = this.createElement("button", "displayTodoBtn", "View Tasks");
       displayTodoBtn.addEventListener('click', () => this.expandTodoList(project));
 
-      const addTodoBtn = document.createElement('button');
-      addTodoBtn.className = "addTodoBtn";
-      addTodoBtn.textContent = "Add Task";
+      const addTodoBtn = this.createElement("button", "addTodoBtn", "Add Task");
       addTodoBtn.addEventListener('click', this.addTodo.bind(this));
 
       project.dataset.index = index;
@@ -47,7 +42,6 @@ class DisplayController {
                      displayTodoBtn, addTodoBtn);
 
       this.displayTodos(project);
-
 
       content.appendChild(project);
     })
@@ -64,29 +58,19 @@ class DisplayController {
     todoList.classList.add('hidden', 'todoList');
 
     this.projects[projectIndex].todos.forEach((item, index) => {
-      const todo = document.createElement('div');
-      todo.className = "todo";
+      const todo = this.createElement("div", "todo");
       todo.dataset.index = index;
 
-      const todoTitle = document.createElement('header');
-      todoTitle.className = "todoTitle";
-      todoTitle.textContent = item.title;
+      const todoTitle = this.createElement("header", "todoTitle", item.title);
 
-      const todoDescription = document.createElement('p');
-      todoDescription.className = "todoDescription";
-      todoDescription.textContent = item.description;
+      const todoDescription = this.createElement("p", "todoDescription", item.description);
 
-      const todoDueDate = document.createElement('p');
-      todoDueDate.className = "todoDueDate";
-      todoDueDate.textContent = item.dueDate;
+      const todoDueDate = this.createElement("p", "todoDueDate", item.dueDate);
 
-      const todoStatus = document.createElement('p');
-      todoStatus.className = "todoStatus";
+      const todoStatus = this.createElement("p", "todoStatus");
       todoStatus.textContent = item.isComplete ? "complete" : "not complete";
 
-      const deleteTodoBtn = document.createElement('button');
-      deleteTodoBtn.className = "deleteTodoBtn";
-      deleteTodoBtn.textContent = "Remove Task";
+      const deleteTodoBtn = this.createElement("button", "deleteTodoBtn", "Remove Task");
       deleteTodoBtn.addEventListener('click', this.deleteTodo.bind(this));
 
       todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, deleteTodoBtn);
