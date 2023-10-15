@@ -1,9 +1,9 @@
 import Logger from "./logger";
 
 class DisplayController {
-  constructor(projects = []){
+  constructor(projects = [], dateFormat = "dd MMM yyyy"){
     this.projects = projects;
-
+    this.dateFormat = dateFormat;
   }
 
   addProject(project) {
@@ -17,6 +17,10 @@ class DisplayController {
     return element;
   }
 
+  formatDate(date) {
+    return format(date, this.dateFormat);
+  }
+
   displayProjects() {
     Logger.log(this);
     const content = document.getElementById("content");
@@ -26,7 +30,7 @@ class DisplayController {
 
       const projectTitle = this.createElement("header", "projectTitle", item.title);
 
-      const projectDue = this.createElement("p", "projectDue", item.dueDate);
+      const projectDue = this.createElement("p", "projectDue", this.formatDate(item.dueDate));
 
       const projectNumOfTodos = this.createElement("p", "projectNumOfTodos", item.todos.length);
 
@@ -65,7 +69,7 @@ class DisplayController {
 
       const todoDescription = this.createElement("p", "todoDescription", item.description);
 
-      const todoDueDate = this.createElement("p", "todoDueDate", item.dueDate);
+      const todoDueDate = this.createElement("p", "todoDueDate", this.formatDate(item.dueDate));
 
       const todoStatus = this.createElement("p", "todoStatus");
       todoStatus.textContent = item.isComplete ? "complete" : "not complete";
