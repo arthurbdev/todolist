@@ -77,6 +77,8 @@ class DisplayController {
       const todoStatus = this.createElement("p", "todoStatus");
       todoStatus.textContent = item.isComplete ? "complete" : "not complete";
 
+      const todoPriority = this.createElement("p", "todoPriority", item.priority); 
+
       const deleteTodoBtn = this.createElement("button", "deleteTodoBtn", "Remove Task");
       deleteTodoBtn.addEventListener('click', this.deleteTodo.bind(this));
 
@@ -84,7 +86,7 @@ class DisplayController {
       editTodoBtn.addEventListener('click', this.editTodo.bind(this));
 
       todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, 
-                  deleteTodoBtn, editTodoBtn);
+                  todoPriority, deleteTodoBtn, editTodoBtn);
       todoList.appendChild(todo);
     })
 
@@ -146,8 +148,13 @@ class DisplayController {
         <label >Date:
           <input type="date" class="inputDate" name="date">
         </label>
-        <label >Priority:
-          <input type="range" class="inputPriority" name="priority">
+        <label class="priorityLabel">Priority:
+          <input type="range" class="inputPriority" min="1" max="3"  value = "1" name="priority" list="values">
+          <datalist id="values">
+            <option value="1" label="low"></option>
+            <option value="2" label="medium"></option>
+            <option value="3" label="high"></option>
+          </datalist>
         </label>
         <button class="submitBtn" type="submit">Add Task</button>
       </form>
@@ -170,7 +177,7 @@ class DisplayController {
       let formData = Object.fromEntries(new FormData(addTodoForm));
       if(formData.date) formData.date = new Date(formData.date);
       this.projects[index].addTodo(new Todo(formData.title, 
-        formData.description, formData.date, formData.priority));
+        formData.description, formData.date, parseInt(formData.priority)));
 
       this.updateTodoList(projectElement);
 
@@ -194,8 +201,7 @@ class DisplayController {
       if(!formData.date) todo.dueDate = null;
       else todo.dueDate = new Date(formData.date);
 
-      // todo.completion = formData.completion;
-      // todo.priority = formData.priority;
+      todo.priority = parseInt(formData.priority);
 
       const projectElement = document.querySelectorAll('.project')[projectIndex];
       this.updateTodoList(projectElement);
@@ -231,6 +237,7 @@ class DisplayController {
     let todo = this.projects[projectIndex].todos[todoIndex];
     dialog.querySelector('.inputTitle').value = todo.title;
     dialog.querySelector('.inputDescription').value = todo.description;
+    dialog.querySelector('.inputPriority').value = todo.pr;
 
     const date = dialog.querySelector('.inputDate');
     // if task has date, sets the date on the inputfield, otherwise
