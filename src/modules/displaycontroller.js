@@ -31,7 +31,8 @@ class DisplayController {
 
       const projectDue = this.createElement("p", "projectDue", this.formatDate(item.dueDate));
 
-      const projectNumOfTodos = this.createElement("p", "projectNumOfTodos", item.todos.length);
+      const projectNumOfTodos = this.createElement("p", "projectNumOfTodos",
+      `${item.completed}/${item.todos.length}`);
 
       const displayTodoBtn = this.createElement("button", "displayTodoBtn", "View Tasks");
       displayTodoBtn.addEventListener('click', () => this.expandTodoList(project));
@@ -76,6 +77,11 @@ class DisplayController {
 
       const todoStatus = this.createElement("p", "todoStatus");
       todoStatus.textContent = item.isComplete ? "complete" : "not complete";
+      todoStatus.addEventListener('click', () => {
+        item.toggleCompletion();
+        this.updateNumberOfTodos(projectElement);
+        todoStatus.textContent = item.isComplete ? "complete" : "not complete";
+      })
 
       const todoPriority = this.createElement("p", "todoPriority", item.priority); 
 
