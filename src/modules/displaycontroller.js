@@ -17,9 +17,8 @@ class DisplayController {
     return element;
   }
 
-  formatDate(date) {
-    return format(date, this.dateFormat);
-  }
+  formatDate = date => format(date, this.dateFormat);
+  
 
   displayProjects() {
     Logger.log(this);
@@ -69,7 +68,11 @@ class DisplayController {
 
       const todoDescription = this.createElement("p", "todoDescription", item.description);
 
-      const todoDueDate = this.createElement("p", "todoDueDate", this.formatDate(item.dueDate));
+      const todoDueDate = this.createElement("p", "todoDueDate");
+      // only display the due date if it is defined
+      if(item.dueDate) {
+       todoDueDate.textContent = this.formatDate(item.dueDate);
+      }
 
       const todoStatus = this.createElement("p", "todoStatus");
       todoStatus.textContent = item.isComplete ? "complete" : "not complete";
@@ -165,6 +168,7 @@ class DisplayController {
       const index = addTodoDialog.dataset.index;
       const projectElement = document.querySelectorAll('.project')[index];
       let formData = Object.fromEntries(new FormData(addTodoForm));
+      if(formData.date) formData.date = new Date(formData.date);
       this.projects[index].addTodo(new Todo(formData.title, 
         formData.description, formData.date, formData.priority));
 
@@ -185,8 +189,12 @@ class DisplayController {
 
       todo.title = formData.title;
       todo.description = formData.description;
+      // if inputfield has no date, reset the task due date, otherwise
+      // set task date to inputfield date
+      if(!formData.date) todo.dueDate = null;
+      else todo.dueDate = new Date(formData.date);
+
       // todo.completion = formData.completion;
-      // todo.dueDate = formData.date;
       // todo.priority = formData.priority;
 
       const projectElement = document.querySelectorAll('.project')[projectIndex];
@@ -223,6 +231,12 @@ class DisplayController {
     let todo = this.projects[projectIndex].todos[todoIndex];
     dialog.querySelector('.inputTitle').value = todo.title;
     dialog.querySelector('.inputDescription').value = todo.description;
+
+    const date = dialog.querySelector('.inputDate');
+    // if task has date, sets the date on the inputfield, otherwise
+    // make the input field blank
+    if (todo.dueDate) date.value = format(todo.dueDate, "yyyy-MM-dd");
+    else date.value = null;
 
   }
 }
