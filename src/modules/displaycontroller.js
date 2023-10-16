@@ -20,6 +20,29 @@ class DisplayController {
   formatDate = date => format(date, this.dateFormat);
   
 
+  updateProgressBar(projectElement) {
+    const index = projectElement.dataset.index;
+    const project = this.projects[index];
+    const bar = projectElement.querySelector('.bar');
+    let percent = project.completed / project.todos.length * 100
+    // bar.innerHTML = `${project.completed} / ${project.todos.length}`
+    bar.innerHTML = percent + '%'
+    bar.style.width = percent + '%'
+
+    switch(true) {
+      case percent <= 30: 
+        bar.style.backgroundColor = 'red';
+        break;
+      case percent <= 99:
+        bar.style.backgroundColor = 'yellow';
+        break;
+      case percent === 100:
+        bar.style.backgroundColor = 'lightgreen';
+        break;
+    }
+
+  }
+
   displayProjects() {
     Logger.log(this);
     const content = document.getElementById("content");
@@ -37,15 +60,20 @@ class DisplayController {
       const displayTodoBtn = this.createElement("button", "displayTodoBtn", "View Tasks");
       displayTodoBtn.addEventListener('click', () => this.expandTodoList(project));
 
+      const progress = this.createElement("div", "progress");
+      const bar = this.createElement("div", "bar");
+      progress.appendChild(bar);
+
       const addTodoBtn = this.createElement("button", "addTodoBtn", "Add Task");
       addTodoBtn.addEventListener('click', this.addTodo.bind(this));
 
       project.dataset.index = index;
-
+ 
       project.append(projectTitle, projectDue, projectNumOfTodos,
-                     displayTodoBtn, addTodoBtn);
+                     progress, displayTodoBtn, addTodoBtn);
 
       this.displayTodos(project);
+      this.updateProgressBar(project);
 
       content.appendChild(project);
     })
