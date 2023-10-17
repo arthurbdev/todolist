@@ -19,5 +19,30 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>calendar-blank-outline</title><path d="M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.9 20.11 3 19 3M19 19H5V9H19V19M19 7H5V5H19V7Z" fill="currentColor" /></svg>
           <div id="profilePic">
         </div>
+      </div>
+    </div>
+    <main>
+      <aside>
+        <ul>
+          <li><header>Home</header></li>
+          <li id="sideBarProjectListContainer">
+            <button id="addProjectBtn">+</button>
+            <ul id="sideBarProjectList" class="tree">Projects
+            </ul>
+          </li>
+          <li id="sideBarTaskListContainer">
+            <button id="addTaskBtn">+</button>
+            <ul id="sideBarTaskList" class="tree">Tasks
+              <li class="sideBarTodoLink" id="sideBarOverdueTasks">Overdue</li>
+              <li class="sideBarTodoLink" id="sideBarTodayTasks">Today</li>
+              <li class="sideBarTodoLink" id="sideBarTomorrowTasks">Tomorrow</li>
+              <li class="sideBarTodoLink" id="sideBarWeekTasks">Week</li>
+            </ul>
+          </li>
+          <li><header>Archive</header></li>
+        </ul>
+      </aside>
+      <div id="content"></div>
+    </main>
 </body>
 </html>
