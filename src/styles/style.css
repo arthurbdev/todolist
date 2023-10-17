@@ -1,3 +1,13 @@
+:root {
+  --darker-purple: #1d0d31;
+  --dark-purple: #382157;
+  --purple: #9D76C1;
+  --light-purple: #E5CFF7;
+  --shadow: 1px 2px 2px 1px #817D84;
+  --red: #1d0d31;
+  --yellow: #1d0d31;
+  --green: #1d0d31;
+}
 body {
   background-color: black;
   color: white;
