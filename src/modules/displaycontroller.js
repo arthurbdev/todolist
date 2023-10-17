@@ -4,11 +4,18 @@ class DisplayController {
   constructor(projects = [], dateFormat = "dd MMM yyyy"){
     this.projects = projects;
     this.dateFormat = dateFormat;
+
+    const btn = document.createElement('button')
+    btn.textContent = "add project";
+    document.body.appendChild(btn)
+    btn.addEventListener('click', this.showAddProjectDialog)
   }
 
   addProject(project) {
     this.projects.push(project);
-    Logger.log(project, this.projects)
+    this.displayProjects();
+    this.expandTodoList(document.querySelectorAll('.project')[this.projects.length - 1]);
+  }
 
   createElement(tag, className, textContent=null) {
     const element = document.createElement(tag);
@@ -26,7 +33,7 @@ class DisplayController {
     const bar = projectElement.querySelector('.bar');
     let percent = project.completed / project.todos.length * 100
     // bar.innerHTML = `${project.completed} / ${project.todos.length}`
-    bar.innerHTML = percent + '%'
+    if (percent) bar.innerHTML = percent + '%'
     bar.style.width = percent + '%'
 
     switch(true) {
@@ -46,13 +53,17 @@ class DisplayController {
   displayProjects() {
     Logger.log(this);
     const content = document.getElementById("content");
+    content.innerHTML = ''
 
     this.projects.forEach((item, index) => {
       const project = this.createElement("div", "project")
+      project.dataset.index = index;
 
       const projectTitle = this.createElement("header", "projectTitle", item.title);
 
-      const projectDue = this.createElement("p", "projectDue", this.formatDate(item.dueDate));
+
+      const projectDue = this.createElement("p", "projectDue")
+      if(item.dueDate) projectDue.textContent = this.formatDate(item.dueDate);
 
       const projectNumOfTodos = this.createElement("p", "projectNumOfTodos",
       `${item.completed}/${item.todos.length}`);
@@ -65,12 +76,15 @@ class DisplayController {
       progress.appendChild(bar);
 
       const addTodoBtn = this.createElement("button", "addTodoBtn", "Add Task");
+
       addTodoBtn.addEventListener('click', this.addTodo.bind(this));
 
-      project.dataset.index = index;
+      const editProjectBtn = this.createElement("button", "editProjectBtn", "Edit project");
+      editProjectBtn.addEventListener('click', this.showEditProjectDialog.bind(this));
+
  
       project.append(projectTitle, projectDue, projectNumOfTodos,
-                     progress, displayTodoBtn, addTodoBtn);
+                     progress, displayTodoBtn, addTodoBtn, editProjectBtn);
 
       this.displayTodos(project);
       this.updateProgressBar(project);
@@ -108,8 +122,16 @@ class DisplayController {
       todoStatus.addEventListener('click', () => {
         item.toggleCompletion();
         this.updateNumberOfTodos(projectElement);
+        this.updateProgressBar(projectElement);
         todoStatus.textContent = item.isComplete ? "complete" : "not complete";
       })
+
+      // todoTitle.addEventListener('click', () => {
+      //   this.updateNumberOfTodos(projectElement);
+      //   item.toggleCompletion();
+      //   todoStatus.textContent = item.isComplete ? "complete" : "not complete";
+      // })
+      //
 
       const todoPriority = this.createElement("p", "todoPriority", item.priority); 
 
@@ -161,12 +183,28 @@ class DisplayController {
 
   updateNumberOfTodos(projectElement) {
     const projectId = projectElement.dataset.index;
+    const project = this.projects[projectId];
 
     projectElement.querySelector(".projectNumOfTodos").textContent = 
-      this.projects[projectId].todos.length;
+      `${project.completed}/${project.todos.length}`
   }
 
   addModals() {
+    const addProjectDialog = document.createElement('dialog');
+    addProjectDialog.id = "addProjectDialog";
+    addProjectDialog.innerHTML = `
+      <form action="">
+        <button type="button" class="closeDialogBtn">x</button>
+        <header>Add new Project</header>
+        <label >Title*:
+          <input class="inputTitle" type="text" name="title" placeholder="Title" required>
+        </label>
+        <label >Date:
+          <input type="date" class="inputDate" name="date">
+        </label>
+        <button class="submitBtn" type="submit">Add Project</button>
+      </form>
+`
     const addTodoDialog = document.createElement('dialog');
     addTodoDialog.id = "addTodoDialog";
     addTodoDialog.innerHTML = `
@@ -199,10 +237,17 @@ class DisplayController {
     editTodoDialog.querySelector('.submitBtn').textContent = "Save changes";
     editTodoDialog.querySelector('header').textContent = "Edit task";
 
+    const editProjectDialog = addProjectDialog.cloneNode(true);
+    editProjectDialog.id = "editProjectDialog";
+    editProjectDialog.querySelector('.submitBtn').textContent = "Save changes";
+    editProjectDialog.querySelector('header').textContent = "Edit project";
+
+    const addProjectForm = addProjectDialog.querySelector('form');
+    const editProjectForm = editProjectDialog.querySelector('form');
     const addTodoForm = addTodoDialog.querySelector('form');
     const editTodoForm = editTodoDialog.querySelector('form');
 
-    document.body.append(addTodoDialog, editTodoDialog);
+    document.body.append(addTodoDialog, editTodoDialog, addProjectDialog, editProjectDialog);
 
     addTodoForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -220,6 +265,33 @@ class DisplayController {
     });
 
     addTodoDialog.addEventListener('close', () => addTodoForm.reset());
+
+    addProjectForm.addEventListener('submit', e => {
+      e.preventDefault();
+      let formData = Object.fromEntries(new FormData(addProjectForm));
+      console.log(formData.date)
+      if(formData.date) formData.date = new Date(formData.date);
+      this.addProject(new Project(formData.title, formData.date));
+
+      addProjectForm.reset();
+      addProjectDialog.close();
+
+    });
+    addProjectDialog.addEventListener('close', () => addTodoForm.reset());
+
+    editProjectForm.addEventListener('submit', e => {
+      e.preventDefault();
+      let formData = Object.fromEntries(new FormData(editProjectForm));
+      const index = editProjectDialog.dataset.index;
+      const project = this.projects[index];
+
+      project.title = formData.title;
+      if(!formData.date) project.dueDate = null;
+      else project.dueDate = new Date(formData.date);
+      this.displayProjects();
+
+      editProjectDialog.close();
+    })
 
     editTodoForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -254,6 +326,7 @@ class DisplayController {
     this.displayTodos(projectElement);
     this.expandTodoList(projectElement);
     this.updateNumberOfTodos(projectElement);
+    this.updateProgressBar(projectElement);
   }
 
   addTodo(e) {
@@ -261,6 +334,7 @@ class DisplayController {
     dialog.dataset.index = e.target.parentElement.dataset.index;
     dialog.showModal();
   }
+
 
   editTodo(e) {
     const dialog = document.getElementById("editTodoDialog");
@@ -279,6 +353,34 @@ class DisplayController {
     if (todo.dueDate) date.value = format(todo.dueDate, "yyyy-MM-dd");
     else date.value = null;
 
+
+    // TODO: change the project of  a todo
+    // const projectSelect = document.createElement('select');
+    // this.projects.forEach((item, index) => {
+    //   let option = document.createElement('option');
+    //   option.textContent = item.title;
+    //   option.value = index;
+    //   projectSelect.appendChild(option);
+    // })
+    // dialog.appendChild(projectSelect)
+    dialog.showModal();
+  }
+
+  showAddProjectDialog = e => document.getElementById("addProjectDialog").showModal();
+  
+  showEditProjectDialog(e){
+    const dialog = document.getElementById("editProjectDialog");
+    const projectIndex = parseInt(e.target.parentElement.dataset.index);
+
+    const project = this.projects[projectIndex];
+    dialog.dataset.index = projectIndex;
+
+    const dateInput = dialog.querySelector('.inputDate');
+    dialog.querySelector('.inputTitle').value = project.title;
+    if (project.dueDate) dateInput.value = format(project.dueDate, "yyyy-MM-dd");
+    else dateInput.value = null;
+
+    dialog.showModal();
   }
 }
 
