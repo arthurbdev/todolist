@@ -107,10 +107,114 @@ svg {
 #topbar svg {
   color: var(--dark-purple);
 }
-  color: white;
+
+main {
+  display: flex;
+  background-color: var(--dark-purple);
+  flex-grow: 2;
 }
 
-.progress {
+aside {
+  background-color: var(--darker-purple);
+  min-width: 233px;
+  max-width: 233px;
+  padding: 20px;
+  color: var(--light-purple);
+  font-size: 30px;
+  border-bottom-right-radius: 40px;
+}
+
+aside ul {
+  padding: 10px 0;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+aside ul.tree li {
+  color: var(--light-purple);
+  margin: 0;
+  margin-left: 4px;
+  padding: 3px 7px;
+  line-height: 20px;
+  font-weight: normal;
+  border-left: 2px solid var(--purple);
+}
+
+aside ul.tree li:last-child {
+  border-left:none;
+}
+
+aside ul.tree li:before {
+  position: relative;
+  top: -0.3em;
+  height: 50px;
+  width: 50px;
+  color: white;
+  border-bottom: 2px solid var(--purple);
+  content: "";
+  display: inline-block;
+  left: -7px;
+}
+
+aside ul.tree li:last-child:before {
+  border-left: 2px solid var(--purple);
+}
+
+aside button {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  font-size: 60px;
+  margin: 0;
+  padding: 0;
+  background-color: var(--dark-purple);
+  color: var(--purple);
+  border: 1px solid var(--dark-purple);
+  flex-shrink: 0;
+  outline: none;
+}
+
+aside #sideBarProjectListContainer {
+  position: relative;
+}
+
+aside #sideBarTaskListContainer {
+  position: relative;
+}
+
+aside #addProjectBtn,
+aside #addTaskBtn {
+  position: absolute;
+  left: 130px;
+  transition: transform 1s;
+}
+
+aside button:hover {
+  transform: rotate(360deg) scale(1.5);
+}
+
+aside #sideBarProjectList li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+aside .sideBarProjectLink,
+aside .sideBarTodoLink {
+  transition: all .5s;
+}
+
+aside .sideBarProjectLink:hover,
+aside .sideBarTodoLink:hover {
+  text-decoration: underline;
+  text-decoration-color: white;
+  color: white;
+  cursor: pointer;
+}
+
   background-color: white;
   width: 100%;
 }
