@@ -33,6 +33,80 @@ body {
   font-family: "JosefinSans";
   min-height: 100vh;
 }
+
+#topbar {
+  display: flex;
+  background-color: var(--purple);
+  justify-content: space-between;
+  width: 100%;
+}
+
+
+#topbar header {
+  background-color: var(--darker-purple);
+  color: var(--light-purple);
+  font-size: 30px;
+  margin-bottom: 10px;
+  padding: 15px 15px 0 15px;
+  border: 2px solid var(--darker-purple);
+  border-top-right-radius: 40px;
+  flex-shrink: 0;
+  justify-self: flex-start;
+  max-width: 240px;
+  width: 100%;
+}
+
+#topbar #rightSide {
+  justify-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-right: 30px;
+}
+
+#searchBar {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+#searchBar input {
+  background-color: var(--light-purple);
+  max-width: 300px;
+  min-width: 0;
+  min-height: 30px;
+  border-radius: 20px;
+  border: 1px solid var(--light-purple);
+  padding-left: 10px;
+  color: var(--darker-purple);
+}
+
+#icons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  justify-self: flex-end;
+  margin-right: 20px;
+}
+
+#profilePic {
+  background-color: var(--light-purple);
+  border: 1px solid var(--light-purple);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-image: url("../assets/profile-picture.gif");
+  background-size: cover;
+}
+
+svg {
+  width: 35px;
+}
+
+#topbar svg {
+  color: var(--dark-purple);
+}
   color: white;
 }
 
