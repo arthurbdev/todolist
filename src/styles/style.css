@@ -215,6 +215,13 @@ aside .sideBarTodoLink:hover {
   cursor: pointer;
 }
 
+
+.removed {
+  transform: translateX(100px) !important;
+  opacity: 0;
+  overflow: hidden;
+}
+
   background-color: white;
   width: 100%;
 }
