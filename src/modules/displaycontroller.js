@@ -172,13 +172,15 @@ class DisplayController {
   }
 
   deleteTodo(e){
+    const todo = e.target.closest(".todo");
+    todo.classList.toggle("removed");
+    const todoList = todo.parentElement;
     const todoId = e.target.closest(".todo").dataset.index;
     const projectElement = e.target.closest(".project");
     const projectId = projectElement.dataset.index;
 
-    // remove todo from project's list and update the display
     this.projects[projectId].removeTodo(todoId);
-    this.updateTodoList(projectElement);
+    todoList.removeChild(todo);
   }
 
   updateNumberOfTodos(projectElement) {
