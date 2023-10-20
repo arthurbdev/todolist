@@ -222,6 +222,12 @@ aside .sideBarTodoLink:hover {
   overflow: hidden;
 }
 
+
+.addedProjects {
+  transform: translateX(-100px) translateY(-100px);
+  opacity: 0
+}
+
   background-color: white;
   width: 100%;
 }

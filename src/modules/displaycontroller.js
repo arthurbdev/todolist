@@ -135,6 +135,9 @@ class DisplayController {
       this.addStylingToDueDate(projectDue, item.dueDate);
 
       content.appendChild(project);
+
+      project.classList.add("addedProjects")
+      setInterval(() => { project.classList.remove("addedProjects")}, 50 * index)
     })
   }
 
