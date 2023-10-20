@@ -1,4 +1,7 @@
 import Logger from "./logger";
+import expandTodoListSvg from '../assets/icons/chevron-left.svg';
+import editSvg from '../assets/icons/pencil.svg';
+import addTodoSvg from '../assets/icons/pen-plus.svg';
 
 class DisplayController {
   constructor(projects = [], dateFormat = "dd MMM yyyy"){
@@ -50,17 +53,23 @@ class DisplayController {
 
   }
 
-  displayProjects() {
-    Logger.log(this);
+  displayProjects(projectList=this.projects, state = "default") {
     const content = document.getElementById("content");
     content.innerHTML = ''
+    content.dataset.state = state;
 
-    this.projects.forEach((item, index) => {
+    projectList.forEach((item, index) => {
       const project = this.createElement("div", "project")
-      project.dataset.index = index;
+      project.dataset.index = this.projects.indexOf(item);
 
       const projectTitle = this.createElement("header", "projectTitle", item.title);
 
+      const progressText = this.createElement("p", "projectProgress", "Progress");
+
+      const tableOfContentsSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      tableOfContentsSVG.setAttribute("viewBox", "0 0 24 24");
+      tableOfContentsSVG.setAttribute("fill", "currentColor");
+      tableOfContentsSVG.innerHTML = `<title>table-of-contents</title><path d="M3,9H17V7H3V9M3,13H17V11H3V13M3,17H17V15H3V17M19,17H21V15H19V17M19,7V9H21V7H19M19,13H21V11H19V13Z" />`;
 
       const projectDue = this.createElement("p", "projectDue")
       if(item.dueDate) projectDue.textContent = this.formatDate(item.dueDate);
@@ -68,23 +77,32 @@ class DisplayController {
       const projectNumOfTodos = this.createElement("p", "projectNumOfTodos",
       `${item.completed}/${item.todos.length}`);
 
-      const displayTodoBtn = this.createElement("button", "displayTodoBtn", "View Tasks");
-      displayTodoBtn.addEventListener('click', () => this.expandTodoList(project));
-
-      const progress = this.createElement("div", "progress");
+      const progressBar = this.createElement("div", "progress");
       const bar = this.createElement("div", "bar");
-      progress.appendChild(bar);
+      progressBar.appendChild(bar);
 
-      const addTodoBtn = this.createElement("button", "addTodoBtn", "Add Task");
+      const progressTextContainer = this.createElement("div", "progressTextContainer");
+      progressTextContainer.append(tableOfContentsSVG, progressText,projectNumOfTodos)
 
-      addTodoBtn.addEventListener('click', this.addTodo.bind(this));
+      const icons = this.createElement("div", "projectIcons");
+      const expandTodoList = new Image();
+      expandTodoList.src = expandTodoListSvg;
+      expandTodoList.classList.add("expandTodoListSvg")
 
       const editProjectBtn = this.createElement("button", "editProjectBtn", "Edit project");
       editProjectBtn.addEventListener('click', this.showEditProjectDialog.bind(this));
+      const addTodo = new Image();
+      addTodo.src = addTodoSvg;
+      addTodo.addEventListener('click', e => this.addTodo(project));
 
+      const editProject = new Image();
+      editProject.src = editSvg;
+      editProject.addEventListener('click', e => this.showEditProjectDialog(e))
+
+      icons.append(editProject, addTodo, expandTodoList);
  
-      project.append(projectTitle, projectDue, projectNumOfTodos,
-                     progress, displayTodoBtn, addTodoBtn, editProjectBtn);
+      project.append(projectTitle,progressTextContainer, progressBar,
+                     projectDue, icons);
 
       this.displayTodos(project);
       this.updateProgressBar(project);
