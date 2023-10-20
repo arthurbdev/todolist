@@ -115,8 +115,8 @@ class DisplayController {
       expandTodoList.src = expandTodoListSvg;
       expandTodoList.classList.add("expandTodoListSvg")
 
-      const editProjectBtn = this.createElement("button", "editProjectBtn", "Edit project");
-      editProjectBtn.addEventListener('click', this.showEditProjectDialog.bind(this));
+      expandTodoList.addEventListener('click', e => this.expandTodoList(project));
+
       const addTodo = new Image();
       addTodo.src = addTodoSvg;
       addTodo.addEventListener('click', e => this.addTodo(project));
@@ -190,11 +190,23 @@ class DisplayController {
       editTodoBtn.addEventListener('click', this.editTodo.bind(this));
 
       todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, 
-                  todoPriority, deleteTodoBtn, editTodoBtn);
-      todoList.appendChild(todo);
-    })
 
+  displayTodos(projectElement){
+    const projectIndex = projectElement.dataset.index;
+
+    // remove previous list of todos from display if it exists
+    let l = projectElement.querySelector('.todoList');
+    if(l) l.remove();
+
+    const todoList = document.createElement('div');
+    todoList.classList.add('hidden', 'todoList');
     projectElement.appendChild(todoList);
+
+    this.projects[projectIndex].todos.forEach((item, index) => {
+      let todo = this.createTodoElement(projectElement, projectIndex, item, this.projects[projectIndex].todos.indexOf(item));
+      projectElement.querySelector('.todoList').appendChild(todo);
+    })
+  }
   }
 
   expandTodoList(projectElement) {
