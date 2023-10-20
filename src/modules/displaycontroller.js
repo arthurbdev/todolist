@@ -12,6 +12,25 @@ class DisplayController {
     btn.textContent = "add project";
     document.body.appendChild(btn)
     btn.addEventListener('click', this.showAddProjectDialog)
+
+  addStylingToDueDate(dueDateElement, dueDate) {
+    const ONE_DAY = 1000 * 60 * 60 * 24;
+    const differenceMs = Math.abs(dueDate - Date.now());
+    const daysLeft = Math.round(differenceMs / ONE_DAY)
+
+    switch(true){
+      case isPast(dueDate) || daysLeft <= 1:
+        dueDateElement.style.backgroundColor = 'red';
+        break;
+      case daysLeft <= 7:
+        dueDateElement.style.backgroundColor = 'yellow';
+        break;
+      case daysLeft <=30:
+      default:
+        dueDateElement.style.backgroundColor = 'lightgreen';
+    }
+  }
+
   }
 
   addProject(project) {
@@ -113,6 +132,7 @@ class DisplayController {
 
       this.displayTodos(project);
       this.updateProgressBar(project);
+      this.addStylingToDueDate(projectDue, item.dueDate);
 
       content.appendChild(project);
     })
