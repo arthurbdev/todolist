@@ -34,20 +34,27 @@ class DisplayController {
     const index = projectElement.dataset.index;
     const project = this.projects[index];
     const bar = projectElement.querySelector('.bar');
+    const progress = projectElement.querySelector('.progress');
+    bar.textContent = `${project.completed} / ${project.todos.length}`
     let percent = project.completed / project.todos.length * 100
-    // bar.innerHTML = `${project.completed} / ${project.todos.length}`
-    if (percent) bar.innerHTML = percent + '%'
+    // if (percent) bar.innerHTML = percent + '%'
     bar.style.width = percent + '%'
 
     switch(true) {
+      case percent === 0:
+        bar.className = "bar";
+        break;
       case percent <= 30: 
-        bar.style.backgroundColor = 'red';
+        bar.className = "bar";
+        bar.classList.add("highPriority");
         break;
       case percent <= 99:
-        bar.style.backgroundColor = 'yellow';
+        bar.className = "bar";
+        bar.classList.add("mediumPriority");
         break;
       case percent === 100:
-        bar.style.backgroundColor = 'lightgreen';
+        bar.className = "bar";
+        bar.classList.add("lowPriority");
         break;
     }
 
