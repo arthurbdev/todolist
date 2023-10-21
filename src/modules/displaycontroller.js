@@ -2,6 +2,11 @@ import Logger from "./logger";
 import expandTodoListSvg from '../assets/icons/chevron-left.svg';
 import editSvg from '../assets/icons/pencil.svg';
 import addTodoSvg from '../assets/icons/pen-plus.svg';
+import editTodoSvg from '../assets/icons/editTodo.svg';
+import deleteSvg from '../assets/icons/delete-outline.svg';
+import expandTodoSvg from '../assets/icons/information-outline.svg';
+import checkCircleSvg from '../assets/icons/check-circle-outline.svg';
+import cancelSvg from '../assets/icons/cancel.svg';
 
 class DisplayController {
   constructor(projects = [], dateFormat = "dd MMM yyyy"){
@@ -141,37 +146,105 @@ class DisplayController {
     })
   }
 
-  displayTodos(projectElement){
-    const projectIndex = projectElement.dataset.index;
+  createTodoElement(projectElement, projectIndex, todo, index){
+      const todoElement= this.createElement("div", "todo");
+      todoElement.dataset.index = index;
+      todoElement.classList.add("added");
 
-    // remove previous list of todos from display if it exists
-    let l = projectElement.querySelector('.todoList');
-    if(l) l.remove();
+      const todoTitle = this.createElement("input", "todoTitle");
+      todoTitle.type = "text";
+      todoTitle.disabled = true;
+      todoTitle.value = todo.title;
 
-    const todoList = document.createElement('div');
-    todoList.classList.add('hidden', 'todoList');
+      todoTitle.dataset.state = "disabled";
 
-    this.projects[projectIndex].todos.forEach((item, index) => {
-      const todo = this.createElement("div", "todo");
-      todo.dataset.index = index;
-
-      const todoTitle = this.createElement("header", "todoTitle", item.title);
-
-      const todoDescription = this.createElement("p", "todoDescription", item.description);
-
-      const todoDueDate = this.createElement("p", "todoDueDate");
-      // only display the due date if it is defined
-      if(item.dueDate) {
-       todoDueDate.textContent = this.formatDate(item.dueDate);
+      const todoStatus = this.createElement("input", "todoStatus");
+      todoStatus.id = `todoStatus${projectIndex}-${index}`
+      todoStatus.type = "checkbox";
+      if(todo.isComplete) {
+        todoStatus.checked = true;
+        todoTitle.classList.toggle('todoTitleComplete');
+        todoElement.classList.toggle('todoComplete');
       }
 
-      const todoStatus = this.createElement("p", "todoStatus");
-      todoStatus.textContent = item.isComplete ? "complete" : "not complete";
-      todoStatus.addEventListener('click', () => {
-        item.toggleCompletion();
+      todoStatus.addEventListener('change', () => {
+        todo.toggleCompletion();
+        todoTitle.classList.toggle('todoTitleComplete');
+        todoElement.classList.toggle('todoComplete');
         this.updateNumberOfTodos(projectElement);
         this.updateProgressBar(projectElement);
-        todoStatus.textContent = item.isComplete ? "complete" : "not complete";
+      })
+
+      const deleteTodoBtn = new Image();
+      deleteTodoBtn.src = deleteSvg;
+
+      const editTodoBtn = new Image();
+      editTodoBtn.src = editTodoSvg;
+      editTodoBtn.className = "editTodoBtn";
+      const confirmEditTitleBtn = new Image();
+      confirmEditTitleBtn.src = checkmarkSvg;
+
+      const expandTodoBtn = new Image();
+      expandTodoBtn.src = expandTodoSvg;
+      expandTodoBtn.className = "expandTodoBtn";
+
+      expandTodoBtn.addEventListener('click', e => this.expandTodo(todoElement));
+
+      const todoDetails = this.createElement("div", "todoDetails");
+      todoDetails.classList.add("hidden");
+
+      const todoDueDate = this.createElement("input", "todoDueDate");
+      // only display the due date if it is defined
+      todoDueDate.type = "date";
+      // todoDueDate.disabled = true;
+      todoDueDate.addEventListener("change", e => {
+        this.addStylingToDueDate(todoDueDate, new Date(todoDueDate.value));
+      });
+      if(todo.dueDate) {
+       todoDueDate.value = format(todo.dueDate, "yyyy-MM-dd");
+      }
+
+      const todoPriority = this.createElement("div", "todoPriority");
+      ["low", "medium", "high"].forEach((priority,i) => {
+        const priorityElement = this.createElement("input", `${priority}Priority`);
+        priorityElement.type = "radio";
+        // priorityElement.value = priority;
+        priorityElement.value = i + 1;
+        priorityElement.name = `priority${projectIndex}-${index}`;
+        priorityElement.id = `todo${priority}Priority${projectIndex}-${index}`;
+        const priorityLabelElement = this.createElement("label", `${priority}PriorityLabel`);
+        priorityLabelElement.textContent = priority;
+        priorityLabelElement.htmlFor = priorityElement.id;
+
+        if(todo.priority === priority) priorityElement.checked = true;
+
+        todoPriority.append(priorityElement,priorityLabelElement);
+      }) 
+      const todoDescription = this.createElement("textarea", "todoDescription", todo.description);
+      todoDescription.rows = 3;
+
+      const todoEditButtons = this.createElement("div", "todoEditButtons hidden")
+      const todoCancelEditBtn = this.createElement("button", "todoCancelEditBtn", "Cancel");
+      const todoConfirmEditBtn = this.createElement("button", "todoConfirmEditBtn", "Confirm Changes")
+
+      const todoCancelSvg = new Image();
+      todoCancelSvg.src = cancelSvg;
+      todoCancelEditBtn.appendChild(todoCancelSvg)
+
+      const todoConfirmSvg = new Image();
+      todoConfirmSvg.src = checkCircleSvg;
+      todoConfirmEditBtn.appendChild(todoConfirmSvg);
+
+      todoEditButtons.append(todoCancelEditBtn, todoConfirmEditBtn);
+
+      todoDetails.append(todoDescription, todoDueDate, todoPriority, todoEditButtons);
+
+      todoDetails.querySelectorAll("input, textarea").forEach(elem => {
+        elem.addEventListener('change', e=> {
+          todoEditButtons.classList.remove("hidden");
+        });
+      })
+
       })
 
       // todoTitle.addEventListener('click', () => {
@@ -186,10 +259,13 @@ class DisplayController {
       const deleteTodoBtn = this.createElement("button", "deleteTodoBtn", "Remove Task");
       deleteTodoBtn.addEventListener('click', this.deleteTodo.bind(this));
 
-      const editTodoBtn = this.createElement("button", "editTodoBtn", "Edit Task");
-      editTodoBtn.addEventListener('click', this.editTodo.bind(this));
+      todoElement.append(todoStatus, todoTitle,
+        expandTodoBtn, editTodoBtn, deleteTodoBtn, todoDetails);
 
-      todo.append(todoTitle, todoStatus, todoDueDate, todoDescription, 
+      todoElement.classList.add(`todo${todo.priority}Priority`);
+      this.addStylingToDueDate(todoDueDate, todo.dueDate);
+      return todoElement;
+  }
 
   displayTodos(projectElement){
     const projectIndex = projectElement.dataset.index;
