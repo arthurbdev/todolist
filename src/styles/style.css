@@ -215,6 +215,14 @@ aside .sideBarTodoLink:hover {
   cursor: pointer;
 }
 
+#content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  width: 100%;
+  gap: 20px;
+  padding: 30px;
+  background-color: var(--dark-purple);
+}
 
 .removed {
   transform: translateX(100px) !important;
