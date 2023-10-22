@@ -374,6 +374,298 @@ aside .sideBarTodoLink:hover {
   display: flex;
   flex-direction: column;
 }
+
+.todoList {
+  border: 1px solid var(--dark-purple);
+  background-color: var(--dark-purple);
+  border-radius: 10px;
+  color: var(--darker-purple);
+  transform-origin: top;
+  transition: max-height .7s ease-out, opacity .7s ease-out;
+  opacity: 100%;
+  max-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
 .hidden {
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  height: auto;
+  visibility: none;
+  opacity:0;
+}
+
+.todo {
+  border: 1px solid var(--purple);
+  background-color: var(--purple);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  transition: transform .5s,opacity 1s, border 1s, max-height 0.2s;
+  height: 100%;
+  max-height: 30px;
+}
+
+.todo:hover {
+  transform: scale(1.04)
+}
+
+.todo img {
+  width: 30px;
+  height: 30px;
+  transition: filter .5s;
+}
+
+.todo img:hover {
+  filter: brightness(0) saturate(100%) invert(100%);
+}
+.todo input[type="checkbox"] {
+  background-color: #fff;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  min-width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 50%;
+  transform: translateY(-0.075em);
+  justify-self: center;
+  align-self: center;
+  display: grid;
+  place-content: center;
+}
+
+.todo input[type="checkbox"]::before {
+  content: "";
+  min-width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-n-out;
+  box-shadow: inset 1em 1em var(--dark-purple);
+  transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+input[type="checkbox"]:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.todo input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.todoComplete {
+filter: grayscale(51%) opacity(70%);
+}
+
+.todoTitleComplete, .todoTitleComplete::placeholder {
+  text-decoration: line-through;
+  font-style: italic;
+  color: var(--light-purple) !important;
+}
+
+.todoTitle {
+  flex-grow: 1;
+  display: inline-block;
+  width: 100px;
+  font-family: inherit;
+  font-size: inherit;
+  background-color: inherit;
+  outline: none;
+  color: var(--dark-purple);
+  border: none;
+  text-overflow: ellipsis;
+  margin: 0;
+  font-size: 22px;
+  padding: 3px;
+  padding-left: 5px;
+}
+
+.todoTitle:focus {
+  border: 3px solid var(--light-purple);
+  border-radius: 10px;
+  padding-left: 5px;
+}
+
+.todoTitle:hover {
+  display: block;
+  flex-grow: 1
+}
+
+.todoDetails {
+  flex-basis: 100%;
+  background-color: var(--light-purple);
+  border-radius: 10px;
+  padding: 10px;
+  transition: max-height .2s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: auto;
+  font-size: 20px;
+  align-items: center;
+}
+
+.todoPriority {
+  display: flex;
+}
+
+.todoDescription {
+  width: 95%;
+  background-color: var(--light-purple);
+  border: 1px solid var(--dark-purple);
+  border-radius: 10px;
+  padding: 5px;
+  height: 100%;
+  flex-grow: 1;
+  resize: none;
+  font-family: inherit;
+  outline: none;
+  transition: max-height 1s;
+}
+
+.todoDescription:focus{
+  outline: none;
+}
+
+::-webkit-resizer {
   display: none;
+}
+.todoDueDate {
+  width: max-content;
+  padding: 2px 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+input[type="date"] {
+  border: 1px solid var(--purple);
+  border-radius: 10px;
+  background-color: white;
+  color: var(--darker-purple);
+  font-family: inherit;
+  font-size: 20px;
+  padding: 10px;
+}
+
+.todoDetails textarea {
+  font-size: 20px;
+}
+
+.todoPriority input[type="radio"] {
+  opacity: 0;
+}
+
+.todoPriority label {
+  padding: 2px 10px;
+  border-radius: 10px;
+  text-transform: capitalize;
+  transition: transform 1s;
+}
+
+.todoPriority label:hover {
+  transform: scale(1.2);
+}
+
+.todoPriority input[type="radio"]:checked + .lowPriorityLabel {
+  background-color: green;
+  color: white;
+  transition: all 1s;
+}
+
+.todoPriority input[type="radio"]:checked + .mediumPriorityLabel {
+  background-color: orange;
+  color: white;
+  transition: all 1s;
+}
+
+.todoPriority input[type="radio"]:checked + .highPriorityLabel {
+  background-color: red;
+  color: white;
+  transition: all 1s;
+}
+
+.lowPriorityLabel {
+  color: green;
+  border: 1px solid green;
+}
+
+.mediumPriorityLabel {
+  color: orange;
+  border: 1px solid orange;
+}
+
+.highPriorityLabel {
+  color: red;
+  border: 1px solid red;
+}
+.todolowPriority {
+  border-left: 10px solid lightgreen;
+}
+
+.todomediumPriority {
+  border-left: 10px solid yellow;
+}
+
+.todohighPriority {
+  border-left: 10px solid red;
+}
+.todoEditButtons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.todoEditButtons button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+  border: none;
+  background: inherit;
+  border-radius: 10px;
+  padding: 5px;
+  transition: background-color .5s, color .5s;
+}
+
+.todoConfirmEditBtn:hover img,
+.todoCancelEditBtn:hover img{
+  filter: brightness(0) saturate(100%) invert(100%) sepia(7%) saturate(0%) hue-rotate(78deg) brightness(114%) contrast(100%);
+}
+
+.todoEditButtons img {
+  transition: filter .5s;
+}
+
+.todoEditButtons .todoConfirmEditBtn {
+  color: green;
+  border: 3px solid green;
+}
+
+.todoEditButtons .todoConfirmEditBtn:hover {
+  color: white;
+  background-color: green;
+}
+
+.todoEditButtons .todoCancelEditBtn {
+  color: red;
+  border: 3px solid red;
+}
+
+.todoEditButtons .todoCancelEditBtn:hover {
+  color:white;
+  background-color: red;
 }
