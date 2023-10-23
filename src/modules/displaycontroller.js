@@ -13,7 +13,7 @@ class DisplayController {
     this.projects = projects;
     this.dateFormat = dateFormat;
 
-    const btn = document.createElement('button')
+    document.addEventListener('mousedown', e => document.lastClick = e);
     btn.textContent = "add project";
     document.body.appendChild(btn)
     btn.addEventListener('click', this.showAddProjectDialog)
@@ -155,6 +155,16 @@ class DisplayController {
       todoTitle.type = "text";
       todoTitle.disabled = true;
       todoTitle.value = todo.title;
+      todoTitle.addEventListener('focusout', e => { 
+        if (document.lastClick.target === editTodoBtn) return;
+        todoTitle.value = todo.title;
+        todoTitle.disabled = true;
+        editTodoBtn.src = editTodoSvg;
+        todoTitle.dataset.state = "disabled";
+      });
+      todoTitle.addEventListener('keypress', e => {
+        if(e.key === "Enter") editTodoBtn.click();
+      })
 
       todoTitle.dataset.state = "disabled";
 
@@ -185,6 +195,24 @@ class DisplayController {
       const editTodoBtn = new Image();
       editTodoBtn.src = editTodoSvg;
       editTodoBtn.className = "editTodoBtn";
+      editTodoBtn.addEventListener('click', e => {
+        switch(todoTitle.dataset.state) {
+          case 'disabled':
+            todoTitle.disabled = false;
+            todoTitle.focus();
+            todoTitle.setSelectionRange(0, todoTitle.value.length);
+            editTodoBtn.src = checkmarkSvg;
+            todoTitle.dataset.state = 'edit';
+            break;
+          case 'edit':
+            todo.title = todoTitle.value;
+            editTodoBtn.src = editTodoSvg;
+            todoTitle.dataset.state = "disabled";
+            todoTitle.blur();
+            break;
+        }
+      });
+
       const confirmEditTitleBtn = new Image();
       confirmEditTitleBtn.src = checkmarkSvg;
 
