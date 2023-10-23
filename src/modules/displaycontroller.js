@@ -177,6 +177,10 @@ class DisplayController {
 
       const deleteTodoBtn = new Image();
       deleteTodoBtn.src = deleteSvg;
+      deleteTodoBtn.addEventListener('click', e => {
+        todoElement.classList.toggle("removed");
+        setTimeout(() => this.deleteTodo(e), 700);
+      });
 
       const editTodoBtn = new Image();
       editTodoBtn.src = editTodoSvg;
