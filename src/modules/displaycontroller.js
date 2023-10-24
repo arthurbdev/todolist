@@ -281,19 +281,30 @@ class DisplayController {
         });
       })
 
+      todoCancelEditBtn.addEventListener("click", e => {
+        todoDescription.value = todo.description;
+        this.todoSetPriorityClass(todoElement, todo.priority);
+        if(todo.Duedate) {
+          todoDueDate.value = format(todo.dueDate, "yyyy-MM-dd");
+        }
+        else todoDueDate.value = null;
+        this.addStylingToDueDate(todoDueDate, todo.dueDate);
+        for(let pr of todoPriority.children){
+          if(todo.pr === parseInt(pr.value)) pr.checked = true; 
+        }
+        todoEditButtons.classList.add("hidden");
       })
 
-      // todoTitle.addEventListener('click', () => {
-      //   this.updateNumberOfTodos(projectElement);
-      //   item.toggleCompletion();
-      //   todoStatus.textContent = item.isComplete ? "complete" : "not complete";
-      // })
-      //
-
-      const todoPriority = this.createElement("p", "todoPriority", item.priority); 
-
-      const deleteTodoBtn = this.createElement("button", "deleteTodoBtn", "Remove Task");
-      deleteTodoBtn.addEventListener('click', this.deleteTodo.bind(this));
+      todoConfirmEditBtn.addEventListener("click", e => {
+        todo.description = todoDescription.value;
+        todo.dueDate = todoDueDate.value ? new Date(todoDueDate.value) : null;
+        for(let pr of todoPriority.children) {
+          if(pr.checked) todo.pr = parseInt(pr.value);
+        }
+        todoEditButtons.classList.add("hidden");
+        this.todoSetPriorityClass(todoElement, todo.priority)
+        // item.dueDate = todoDueDate.value;
+      })
 
       todoElement.append(todoStatus, todoTitle,
         expandTodoBtn, editTodoBtn, deleteTodoBtn, todoDetails);
