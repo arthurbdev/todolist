@@ -250,8 +250,12 @@ class DisplayController {
 
         if(todo.priority === priority) priorityElement.checked = true;
 
+        priorityElement.addEventListener("change", e => {
+          this.todoSetPriorityClass(todoElement, priority);
+        })
         todoPriority.append(priorityElement,priorityLabelElement);
       }) 
+      
       const todoDescription = this.createElement("textarea", "todoDescription", todo.description);
       todoDescription.rows = 3;
 
@@ -315,6 +319,14 @@ class DisplayController {
       projectElement.querySelector('.todoList').appendChild(todo);
     })
   }
+
+  todoSetPriorityClass(todoElement, priority) {
+      todoElement.classList.forEach(classitem => {
+        if(classitem.indexOf("Priority") > -1) todoElement.classList.remove(classitem);
+      })
+      todoElement.classList.add(`todo${priority}Priority`);
+  }
+
   }
 
   expandTodoList(projectElement) {
