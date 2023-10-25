@@ -342,24 +342,44 @@ class DisplayController {
 
   expandTodoList(projectElement) {
     const todolist = projectElement.querySelector(".todoList");
-    const displayTodoBtn = projectElement.querySelector(".displayTodoBtn");
+    if(todolist.classList.contains("hidden")) {
+      projectElement.querySelector(".expandTodoListSvg").classList.add("rotate");
 
-    // if there are no todos in a project, hide the button and the list
+      for(let i = 0; i < todolist.children.length; i++) {
+        todolist.children[i].style.transitionDelay = `${200*i}ms`;
+        todolist.children[i].classList.remove("added");
+      }
+    }
+    else {
+      projectElement.querySelector(".expandTodoListSvg").classList.remove("rotate");
+      todolist.querySelectorAll('.todoDetails').forEach(el => {
+        if(!el.classList.contains("hidden")) this.expandTodo(el.closest('.todo'));
+      })
+      let reversed = [...todolist.children].reverse();
+      reversed.forEach((el, i) => {
+        el.style.transitionDelay = `${100*i}ms`;
+        el.classList.add("added");
+      })
+    }
+
+    // reset the transition Delay after animations are done
+    setTimeout(() => { 
+        [...todolist.children].forEach(e => e.style.transitionDelay = `0ms`) }, 100*todolist.children.length)
+
+    // if there are no todos in a project, hide the list
     if(!todolist.firstChild) {
-      displayTodoBtn.style.display = 'none';
       todolist.classList.add("hidden");
       return;
     }
-    else displayTodoBtn.style.display = '';
-
-    if(todolist.classList.value.includes("hidden")) {
-      displayTodoBtn.textContent = "Hide tasks";
-    }
-    else {
-      displayTodoBtn.textContent = "View tasks";
-    }
 
     todolist.classList.toggle("hidden");
+    
+    if (todolist.style.maxHeight) {
+      todolist.style.maxHeight = null;
+    }
+    else {
+      todolist.style.maxHeight = `${500 * todolist.children.length}px`;
+    }
   }
 
   deleteTodo(e){
