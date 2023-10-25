@@ -5,6 +5,7 @@ import addTodoSvg from '../assets/icons/pen-plus.svg';
 import editTodoSvg from '../assets/icons/editTodo.svg';
 import deleteSvg from '../assets/icons/delete-outline.svg';
 import expandTodoSvg from '../assets/icons/information-outline.svg';
+import checkmarkSvg from '../assets/icons/check-icn.svg';
 import checkCircleSvg from '../assets/icons/check-circle-outline.svg';
 import cancelSvg from '../assets/icons/cancel.svg';
 
