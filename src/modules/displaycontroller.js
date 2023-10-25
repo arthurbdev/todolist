@@ -542,10 +542,20 @@ class DisplayController {
     this.updateProgressBar(projectElement);
   }
 
-  addTodo(e) {
-    const dialog = document.getElementById("addTodoDialog");
-    dialog.dataset.index = e.target.parentElement.dataset.index;
-    dialog.showModal();
+  addTodo(projectElement) {
+    const todolist = projectElement.querySelector(".todoList");
+    const projIndex = projectElement.dataset.index;
+
+    const newTodo = new Todo("New task", "", null);
+    this.projects[projIndex].addTodo(newTodo);
+    const newId = this.projects[projIndex].todos.length - 1;
+    const newEl = this.createTodoElement(projectElement, projIndex, newTodo, newId)
+    todolist.appendChild(newEl)
+    if(!todolist.classList.contains("hidden")) this.expandTodoList(projectElement);
+    this.expandTodoList(projectElement);
+    setTimeout(() => newEl.scrollIntoView({behavior: 'smooth', block: 'center'}), 500);
+    newEl.querySelector(".expandTodoBtn").click()
+    newEl.querySelector(".editTodoBtn").click()
   }
 
 
