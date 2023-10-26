@@ -14,14 +14,43 @@ import checkCircleSvg from '../assets/icons/check-circle-outline.svg';
 import cancelSvg from '../assets/icons/cancel.svg';
 
 class DisplayController {
-  constructor(projects = [], dateFormat = "dd MMM yyyy"){
+  constructor(projects = [], todolist =[], dateFormat = "dd MMM yyyy"){
     this.projects = projects;
+    this.todolist = todolist;
     this.dateFormat = dateFormat;
 
     document.addEventListener('mousedown', e => document.lastClick = e);
-    btn.textContent = "add project";
-    document.body.appendChild(btn)
-    btn.addEventListener('click', this.showAddProjectDialog)
+    this.addSideBarEventListeners();
+  }
+
+  addSideBarEventListeners(){
+    document.getElementById('addProjectBtn').addEventListener('click', this.showAddProjectDialog)
+    document.getElementById("sideBarOverdueTasks").addEventListener('click', e => this.displayTodoList());
+  }
+
+  displayTodoList(){
+    const content = document.getElementById("content");
+    content.innerHTML = "";
+    content.dataset.state = "todolist";
+    const todolist = this.createElement("div", "project");
+    const header = this.createElement("header", ".todoListHeader")
+    const list = this.createElement("div", "todoLlist")
+    this.projects.forEach((proj, i) => {
+      let overdue = proj.todos.filter(todo => {
+        return differenceInCalendarDays(todo.dueDate, Date.now()) <= 1 && !todo.isComplete;
+      })
+
+      overdue.forEach((todo, k) => {
+        let newtodo = this.createTodoElement(header,i, todo,k)
+        setInterval(() => newtodo.classList.remove("added"), 100)
+        list.appendChild(newtodo);
+      })
+    })
+    header.textContent = "Todo List";
+    todolist.appendChild(header);
+    todolist.appendChild(list)
+    content.appendChild(todolist);
+  }
 
   addStylingToDueDate(dueDateElement, dueDate) {
     const ONE_DAY = 1000 * 60 * 60 * 24;
