@@ -41,6 +41,43 @@ class DisplayController {
     }
   }
 
+  updateSideBarProjectList(){
+    const projectList = document.getElementById("sideBarProjectList");
+    projectList.innerHTML = "";
+    const projectsLink = this.createElement("a", "sideBarProjectLink", "Projects");
+    const content = document.getElementById("content");
+    projectList.appendChild(projectsLink);
+    projectsLink.addEventListener('click', e => this.displayProjects());
+
+    const overdue = this.createElement("li", "sideBarProject");
+    overdue.appendChild(this.createElement("a", "sideBarProjectLink", "Overdue"));
+    projectList.appendChild(overdue);
+    overdue.addEventListener('click', e => this.displayOverDueProjects());
+
+    const complete = this.createElement("li", "sideBarProject");
+    complete.appendChild(this.createElement("a", "sideBarProjectLink", "Completed"))
+    complete.addEventListener('click', e => this.displayCompleteProjects());
+    projectList.appendChild(complete);
+
+    this.projects.forEach((project, index) => {
+      const li = this.createElement("li", "sideBarProject");
+      const link = this.createElement("a", "sideBarProjectLink", project.title)
+      link.addEventListener('click', e => {
+        if(content.dataset.state !== "default") {
+          this.displayProjects();
+        }
+        let el = document.getElementById("content").children[index];
+        if(el.querySelector('.todoList').classList.contains("hidden")){ 
+          this.expandTodoList(el);
+        } 
+
+        el.scrollIntoView({ behavior: 'smooth', block: 'center'});
+        el.classList.add("highlight")
+        setTimeout(() => el.classList.remove("highlight"), 2000);
+      })
+      li.appendChild(link);
+      projectList.appendChild(li);
+    })
   }
 
   addProject(project) {
@@ -149,6 +186,7 @@ class DisplayController {
       project.classList.add("addedProjects")
       setInterval(() => { project.classList.remove("addedProjects")}, 50 * index)
     })
+    this.updateSideBarProjectList();
   }
 
   createTodoElement(projectElement, projectIndex, todo, index){
