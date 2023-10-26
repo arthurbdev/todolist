@@ -41,6 +41,14 @@ class DisplayController {
     }
   }
 
+  displayCompleteProjects(){
+    const projList = this.projects.filter(proj => {
+      return proj.checkCompletion();
+    })
+
+    this.displayProjects(projList, "complete");
+  }
+
   updateSideBarProjectList(){
     const projectList = document.getElementById("sideBarProjectList");
     projectList.innerHTML = "";
