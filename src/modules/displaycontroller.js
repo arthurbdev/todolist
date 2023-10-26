@@ -41,6 +41,15 @@ class DisplayController {
     }
   }
 
+  displayOverDueProjects(){
+    // document.getElementById("content");
+    // content.innerHTML = "";
+    const projList = this.projects.filter(proj => {
+      return differenceInCalendarDays(proj.dueDate, Date.now()) <= 1;
+    });
+    this.displayProjects(projList, "overdue")
+  }
+
   displayCompleteProjects(){
     const projList = this.projects.filter(proj => {
       return proj.checkCompletion();
