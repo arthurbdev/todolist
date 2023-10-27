@@ -1,12 +1,19 @@
 import Logger from "./logger";
 
 class Project {
-  constructor(title, dueDate, todos) {
+  constructor(title, dueDate, todos = []) {
     this.title = title;
     this.dueDate = dueDate;
     this.todos = todos;
   }
 
+  checkCompletion(){
+    let c = true;
+    this.todos.forEach(todo => {
+      if(!todo.isComplete) c = false;
+    });
+    return c;
+  }
 
   //how many tasks are done
   get completed() {
